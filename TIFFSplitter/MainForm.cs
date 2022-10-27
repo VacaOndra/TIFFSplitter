@@ -7,6 +7,9 @@ namespace TIFFSplitter
         public MainForm()
         {
             InitializeComponent();
+            this.AllowDrop = true;
+            this.DragEnter += new DragEventHandler(TbPath_DragEnter);
+            this.DragDrop += new DragEventHandler(TbPath_DragDrop);
         }
 
         private void BtnSplit_Click(object sender, EventArgs e)
@@ -22,6 +25,14 @@ namespace TIFFSplitter
                 FileStream fs = new FileStream(path, FileMode.Open);
                 Image image = Image.FromStream(fs);
 
+                ImageCodecInfo myImageCodecInfo;
+                myImageCodecInfo = GetEncoderInfo("image/tiff");
+
+                Encoder myEncoder = Encoder.Compression;
+                EncoderParameters myEncoderParameters = new EncoderParameters(1);
+                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, (long)EncoderValue.CompressionCCITT4);
+                myEncoderParameters.Param[0] = myEncoderParameter;
+
                 int pagesCount = image.GetFrameCount(FrameDimension.Page);
                 if (pagesCount > 0)
                 {
@@ -33,7 +44,7 @@ namespace TIFFSplitter
                         {
                             using (FileStream fileStream = new FileStream(outputFileName, FileMode.Create, FileAccess.ReadWrite))
                             {
-                                image.Save(memory, ImageFormat.Tiff);
+                                image.Save(memory, myImageCodecInfo, myEncoderParameters);
                                 byte[] bytes = memory.ToArray();
                                 fileStream.Write(bytes, 0, bytes.Length);
                             }
@@ -62,6 +73,43 @@ namespace TIFFSplitter
             if (od.ShowDialog() == DialogResult.OK)
             {
                 tbPath.Text = od.FileName;
+            }
+        }
+        private static ImageCodecInfo GetEncoderInfo(String mimeType)
+        {
+            int j;
+            ImageCodecInfo[] encoders;
+            encoders = ImageCodecInfo.GetImageEncoders();
+            for (j = 0; j < encoders.Length; ++j)
+            {
+                if (encoders[j].MimeType == mimeType)
+                    return encoders[j];
+            }
+            return null;
+        }
+        void TbPath_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
+        void TbPath_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if(files.Count() == 1)
+            {
+                string extension = Path.GetExtension(files[0]).ToLower();
+                if (extension == ".tif" || extension == ".tiff")
+                {
+                    tbPath.Text = files[0];
+                }
+                else
+                {
+                    MessageBox.Show("Soubor musí být typu TIF !", "ERROR", MessageBoxButtons.OK);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Lze pøetáhnout pouze 1 soubor !", "ERROR", MessageBoxButtons.OK);
             }
         }
     }
