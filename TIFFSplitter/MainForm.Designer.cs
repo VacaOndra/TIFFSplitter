@@ -31,11 +31,12 @@
             this.btnSplit = new System.Windows.Forms.Button();
             this.tbPath = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
+            this.CompressionCheckBox = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
             // btnSplit
             // 
-            this.btnSplit.Location = new System.Drawing.Point(451, 68);
+            this.btnSplit.Location = new System.Drawing.Point(451, 94);
             this.btnSplit.Name = "btnSplit";
             this.btnSplit.Size = new System.Drawing.Size(75, 23);
             this.btnSplit.TabIndex = 0;
@@ -45,6 +46,7 @@
             // 
             // tbPath
             // 
+            this.tbPath.BackColor = System.Drawing.Color.White;
             this.tbPath.Location = new System.Drawing.Point(12, 12);
             this.tbPath.Name = "tbPath";
             this.tbPath.ReadOnly = true;
@@ -61,15 +63,34 @@
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.BtnBrowse_Click);
             // 
-            // Form1
+            // CompressionCheckBox
+            // 
+            this.CompressionCheckBox.CheckOnClick = true;
+            this.CompressionCheckBox.FormattingEnabled = true;
+            this.CompressionCheckBox.Items.AddRange(new object[] {
+            "None",
+            "LZW",
+            "CCITT Group 3 fax",
+            "CCITT Group 4 fax"});
+            this.CompressionCheckBox.Location = new System.Drawing.Point(12, 41);
+            this.CompressionCheckBox.Name = "CompressionCheckBox";
+            this.CompressionCheckBox.Size = new System.Drawing.Size(127, 76);
+            this.CompressionCheckBox.TabIndex = 3;
+            this.CompressionCheckBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.CompressionCheckBox_ItemCheck);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(538, 108);
+            this.ClientSize = new System.Drawing.Size(538, 127);
+            this.Controls.Add(this.CompressionCheckBox);
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.tbPath);
             this.Controls.Add(this.btnSplit);
-            this.Name = "Form1";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.Name = "MainForm";
+            this.ShowIcon = false;
             this.Text = "TIFF Splitter";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -81,5 +102,6 @@
         private Button btnSplit;
         private TextBox tbPath;
         private Button btnBrowse;
+        private CheckedListBox CompressionCheckBox;
     }
 }
